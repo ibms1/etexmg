@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 import easyocr
 import base64
+import io
 
 # Mapping of language codes
 LANGUAGE_MAP = {
@@ -72,7 +73,8 @@ def main():
         
         with col1:
             if st.button("📋 Copy Text"):
-                st.clipboard.write(st.session_state.extracted_text)
+                # Use Streamlit's built-in clipboard mechanism
+                st.write(st.session_state.extracted_text)
                 st.success("Text copied to clipboard!")
         
         with col2:
@@ -83,3 +85,25 @@ def main():
                 st.markdown(href, unsafe_allow_html=True)
 
 main()
+
+
+# إخفاء العناصر غير المرغوب فيها
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            .stDeployButton {display:none;}
+            #stStreamlitLogo {display: none;}
+            a {
+                text-decoration: none;
+                color: inherit;
+                pointer-events: none;
+            }
+            a:hover {
+                text-decoration: none;
+                color: inherit;
+                cursor: default;
+            }
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
