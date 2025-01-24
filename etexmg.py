@@ -5,7 +5,7 @@ import easyocr
 def extract_text(image, selected_languages):
     """Extract text using EasyOCR"""
     reader = easyocr.Reader(selected_languages)
-    results = reader.readtext(image)
+    results = reader.readtext(numpy.array(image))
     
     # Combine detected text
     extracted_text = ' '.join([result[1] for result in results])
