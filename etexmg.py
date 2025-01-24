@@ -56,7 +56,7 @@ def main():
     if uploaded_file is not None:
         # Display uploaded image
         image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_container_width=True)
+        st.image(image, caption="Uploaded Image", use_column_width=True)
         
         # Extract text button
         if st.button("Extract Text"):
@@ -68,23 +68,15 @@ def main():
         st.subheader("Extracted Text")
         text_area = st.text_area("", st.session_state.extracted_text, height=300)
         
-        # Copy and Save buttons
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            if st.button("📋 Copy Text"):
-                # Use Streamlit's built-in clipboard mechanism
-                st.write(st.session_state.extracted_text)
-                st.success("Text copied to clipboard!")
-        
-        with col2:
-            if st.button("💾 Save Text"):
-                # Create download link
-                b64 = base64.b64encode(st.session_state.extracted_text.encode()).decode()
-                href = f'<a href="data:file/txt;base64,{b64}" download="extracted_text.txt">Download Text File</a>'
-                st.markdown(href, unsafe_allow_html=True)
+        # Save button
+        if st.button("💾 Save Text"):
+            # Save the text directly to a file
+            with open("extracted_text.txt", "w") as file:
+                file.write(st.session_state.extracted_text)
+            st.success("Text saved successfully!")
 
 main()
+
 
 
 # إخفاء العناصر غير المرغوب فيها
