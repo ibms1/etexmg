@@ -1,11 +1,12 @@
 import streamlit as st
+import numpy as np
 from PIL import Image
 import easyocr
 
 def extract_text(image, selected_languages):
     """Extract text using EasyOCR"""
     reader = easyocr.Reader(selected_languages)
-    results = reader.readtext(numpy.array(image))
+    results = reader.readtext(np.array(image))
     
     # Combine detected text
     extracted_text = ' '.join([result[1] for result in results])
