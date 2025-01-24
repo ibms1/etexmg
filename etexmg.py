@@ -66,21 +66,35 @@ def main():
         st.subheader("Extracted Text")
         text_area = st.text_area("", st.session_state.extracted_text, height=300)
         
-        # Save button
-        if st.button("💾 Save Text"):
-            # Save the text to a file and provide a download link
-            file_name = "extracted_text.txt"
-            with open(file_name, "w") as file:
-                file.write(st.session_state.extracted_text)
-            
-            # Provide a download link using st.download_button
-            with open(file_name, "r") as file:
-                st.download_button(
-                    label="Download Text File",
-                    data=file,
-                    file_name=file_name,
-                    mime="text/plain"
-                )
-            st.success("Text saved successfully!")
+        # Provide a download button directly
+        st.download_button(
+            label="💾 Save Text",
+            data=st.session_state.extracted_text,
+            file_name="extracted_text.txt",
+            mime="text/plain"
+        )
 
 main()
+
+
+
+# إخفاء العناصر غير المرغوب فيها
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            .stDeployButton {display:none;}
+            #stStreamlitLogo {display: none;}
+            a {
+                text-decoration: none;
+                color: inherit;
+                pointer-events: none;
+            }
+            a:hover {
+                text-decoration: none;
+                color: inherit;
+                cursor: default;
+            }
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
