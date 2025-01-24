@@ -3,14 +3,35 @@ import numpy as np
 from PIL import Image
 import easyocr
 
+# Mapping of language codes
+LANGUAGE_MAP = {
+    'en': 'English', 
+    'ar': 'Arabic', 
+    'fr': 'French', 
+    'es': 'Spanish', 
+    'de': 'German', 
+    'ru': 'Russian', 
+    'zh': 'Chinese', 
+    'ja': 'Japanese', 
+    'ko': 'Korean', 
+    'pt': 'Portuguese', 
+    'it': 'Italian', 
+    'tr': 'Turkish', 
+    'he': 'Hebrew'
+}
+
 def extract_text(image, selected_languages):
     """Extract text using EasyOCR"""
-    reader = easyocr.Reader(selected_languages)
-    results = reader.readtext(np.array(image))
-    
-    # Combine detected text
-    extracted_text = ' '.join([result[1] for result in results])
-    return extracted_text
+    try:
+        reader = easyocr.Reader(selected_languages)
+        results = reader.readtext(np.array(image))
+        
+        # Combine detected text
+        extracted_text = ' '.join([result[1] for result in results])
+        return extracted_text
+    except Exception as e:
+        st.error(f"Error in text extraction: {e}")
+        return ""
 
 def main():
     st.title("🌐 Multilingual OCR Extractor")
@@ -22,10 +43,11 @@ def main():
         help="Upload an image to extract text"
     )
     
-    # Language selection
+    # Language selection with full names
     selected_languages = st.multiselect(
         "Select Languages", 
-        ['en', 'ar', 'fr', 'es', 'de', 'ru', 'zh', 'ja', 'ko', 'pt', 'it', 'tr', 'he'],
+        list(LANGUAGE_MAP.keys()),
+        format_func=lambda x: LANGUAGE_MAP[x],
         default=['en']
     )
     
@@ -43,5 +65,4 @@ def main():
             st.subheader("Extracted Text")
             st.text_area("", extracted_text, height=300)
 
-if __name__ == "__main__":
-    main()
+main()
