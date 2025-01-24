@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 from PIL import Image
 import easyocr
+import base64
 
 # Mapping of language codes
 LANGUAGE_MAP = {
@@ -33,6 +34,12 @@ def extract_text(image, selected_languages):
         st.error(f"Error in text extraction: {e}")
         return ""
 
+def get_download_link(text):
+    """Create a download link for text file"""
+    b64 = base64.b64encode(text.encode()).decode()
+    href = f'<a href="data:file/txt;base64,{b64}" download="extracted_text.txt">Download Text File</a>'
+    return href
+
 def main():
     st.title("🌐 Multilingual OCR Extractor")
     
@@ -63,6 +70,18 @@ def main():
                 
             # Display results
             st.subheader("Extracted Text")
-            st.text_area("", extracted_text, height=300)
+            text_area = st.text_area("", extracted_text, height=300)
+            
+            # Copy and Save buttons
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                if st.button("📋 Copy Text"):
+                    st.code(extracted_text)
+                    st.success("Text copied to clipboard!")
+            
+            with col2:
+                if st.button("💾 Save Text"):
+                    st.markdown(get_download_link(extracted_text), unsafe_allow_html=True)
 
 main()
