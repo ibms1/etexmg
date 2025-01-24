@@ -1,30 +1,18 @@
 import streamlit as st
-import pytesseract
 from PIL import Image
-import cv2
-import numpy as np
-
-# Supported Languages
-LANGUAGES = [
-    'ara', 'eng', 'fra', 'spa', 'deu', 'rus', 'chi_sim', 
-    'jpn', 'kor', 'por', 'ita', 'tur', 'heb'
-]
-
-def preprocess_image(image):
-    """Image preprocessing to improve OCR accuracy"""
-    gray = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
-    thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    return thresh
+import easyocr
 
 def extract_text(image, selected_languages):
-    """Extract text from image with multiple languages"""
-    preprocessed = preprocess_image(image)
-    languages = '+'.join(selected_languages)
-    text = pytesseract.image_to_string(preprocessed, lang=languages)
-    return text
+    """Extract text using EasyOCR"""
+    reader = easyocr.Reader(selected_languages)
+    results = reader.readtext(image)
+    
+    # Combine detected text
+    extracted_text = ' '.join([result[1] for result in results])
+    return extracted_text
 
 def main():
-    st.title("Multilingual OCR Text Extractor")
+    st.title("🌐 Multilingual OCR Extractor")
     
     # Image upload
     uploaded_file = st.file_uploader(
@@ -33,17 +21,17 @@ def main():
         help="Upload an image to extract text"
     )
     
-    # Language selection moved under image upload
+    # Language selection
     selected_languages = st.multiselect(
         "Select Languages", 
-        LANGUAGES, 
-        default=['eng']
+        ['en', 'ar', 'fr', 'es', 'de', 'ru', 'zh', 'ja', 'ko', 'pt', 'it', 'tr', 'he'],
+        default=['en']
     )
     
     if uploaded_file is not None:
         # Display uploaded image
         image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_column_width=True)
+        st.image(image, caption="Uploaded Image", use_container_width=True)
         
         # Extract text button
         if st.button("Extract Text"):
